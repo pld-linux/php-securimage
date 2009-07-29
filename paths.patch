@@ -1,0 +1,20 @@
+--- securimage/securimage.php~	2009-07-29 19:32:14.718682001 +0300
++++ securimage/securimage.php	2009-07-29 19:35:26.683748254 +0300
+@@ -149,7 +149,7 @@
+    *
+    * @var mixed
+    */
+-  var $gd_font_file = 'gdfonts/bubblebath.gdf';
++  var $gd_font_file = '/usr/share/php-securimage/gdfonts/bubblebath.gdf';
+ 
+   /**
+    * The approximate size of the font in pixels.<br />
+@@ -167,7 +167,7 @@
+    *
+    * @var string
+    */
+-  var $ttf_file = "./elephant.ttf";
++  var $ttf_file = "/usr/share/php-securimage/elephant.ttf";
+ 
+   /**
+    * The font size.<br />
