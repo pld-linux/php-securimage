@@ -1,58 +1,80 @@
-Summary:	PHP CAPTCHA script for generating complex images and CAPTCHA codes
-Name:		php-securimage
-Version:	1.0.3.1
-Release:	1
-License:	LGPL v2.1+
-Group:		Libraries
-Source0:	http://www.phpcaptcha.org/latest.tar.gz
-# Source0-md5:	69752053a8ec622c78ebb1303cd83450
-URL:		http://www.phpcaptcha.org/
-Patch0:		paths.patch
+# TODO
+# - add web access, but secure it to keep only needed files there
+%define		pkgname	securimage
+%define		php_min_version 5.2.0
+%include	/usr/lib/rpm/macros.php
+Summary:	PHP CAPTCHA Script
+Name:		php-%{pkgname}
+Version:	3.5.2
+Release:	0.1
+License:	BSD
+Group:		Development/Languages/PHP
+Source0:	https://www.phpcaptcha.org/latest.tar.gz?/%{pkgname}-%{version}.tar.gz
+# Source0-md5:	5725a8ce1bb3c86e8ecedc7bc7e20a94
+URL:		https://www.phpcaptcha.org/
+BuildRequires:	/usr/bin/php
+BuildRequires:	rpm-php-pearprov >= 4.4.2-11
 BuildRequires:	rpmbuild(macros) >= 1.461
-BuildRequires:	sed >= 4.0
-Requires:	php-common >= 3:4.3.0
-Requires:	php-gd
+Requires:	php(core) >= %{php_min_version}
+Requires:	php(date)
+Requires:	php(gd)
+Requires:	php(mbstring)
+Requires:	php(pcre)
+Requires:	php(session)
+Requires:	php(spl)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_appdir		%{_datadir}/%{name}
+%define		_appdir			%{php_data_dir}/%{pkgname}
 
 %description
-Securimage is a PHP class that is used to generate and validate
-CAPTCHA images. The classes uses an existing PHP session or creates
-its own if none is found to store the CAPTCHA code. Variables within
-the class are used to control the style and display of the image. The
-class supports TTF fonts and effects for strengthening the security of
-the image. If TTF support is not available, GD fonts can be used as
-well, but certain options such as transparent text and angled letters
-cannot be used.
+Securimage is an open-source free PHP CAPTCHA script for generating
+complex images and CAPTCHA codes to protect forms from spam and abuse.
+
+It can be easily added into existing forms on your website to provide
+protection from spam bots. It can run on most any webserver as long as
+you have PHP installed, and GD support within PHP. Securimage does
+everything from generating the CAPTCHA images to validating the typed
+code. Audible codes can be streamed to the browser with Flash for the
+vision impaired.
+
+Features:
+- Show an image in just 3 lines of code
+- Validate submitted entries in less than 6 lines of code
+- Customizable code length, character sets, and Unicode support
+- TTF font support
+- Easily add background images
+- Several security features such as image distortion, random lines,
+  and noise
+- Flash button to stream audible codes in WAV format
+- Ability to use a word list
+- Case sensitive option for added security
+- Display alphanumeric captchas, mathematical captchas, or a multi
+  word captcha
+- Highly customizable!
 
 %prep
-%setup -q -n securimage
-%patch0 -p1
+%setup -qc
 
-# undos the source
-%{__sed} -i -e 's,\r$,,' *.php
+mv %{pkgname}/*.{txt,ttf} .
+
+install -d examples
+mv %{pkgname}/{*.html,*example*} examples
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{php_data_dir},%{_appdir},%{_examplesdir}/%{name}-%{version}}
-cp -a securimage.php  $RPM_BUILD_ROOT%{php_data_dir}
-cp -a gdfonts $RPM_BUILD_ROOT%{_appdir}
-cp -a *.ttf $RPM_BUILD_ROOT%{_appdir}
+install -d $RPM_BUILD_ROOT%{_appdir}
+cp -a %{pkgname}/* $RPM_BUILD_ROOT%{_appdir}
+install -d $RPM_BUILD_ROOT%{php_data_dir}
 
-# samples
-cp -a securimage_play.php securimage_show.php $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a example_form.php securimage_example.php $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a images $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README.txt
-%doc example_form.php securimage_example.php
-%{php_data_dir}/securimage.php
-%{_appdir}
+%doc README.txt README.FONT.txt LICENSE.txt
+%{php_data_dir}/securimage
 %{_examplesdir}/%{name}-%{version}
