@@ -2,7 +2,6 @@
 # - add web access, but secure it to keep only needed files there
 %define		pkgname	securimage
 %define		php_min_version 5.2.0
-%include	/usr/lib/rpm/macros.php
 Summary:	PHP CAPTCHA Script
 Name:		php-%{pkgname}
 Version:	3.5.2
